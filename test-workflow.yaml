@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: test-git-commiter
+  generateName: test-git-commiter
   namespace: argo-workflows
 spec:
   entrypoint: commit
@@ -23,6 +23,7 @@ spec:
         value: git@github.com:xyres137/versions.git
       - name: version-branch
         value: test
+
     
   volumeClaimTemplates:
     - metadata:
@@ -50,7 +51,7 @@ spec:
                 name: argo-git
                 key: ssh-private-key
               branch: '{{workflow.parameters.version-branch}}'
-      script:
+      container:
         image: harbor.atro.xyz/dl-utils/git-commiter:latest
         volumeMounts:
           - mountPath: /tmp/
@@ -59,16 +60,6 @@ spec:
             name: work
         securityContext:
           privileged: true
-        command: [ sh ]
-        source: |
-          set -e   
-          /home/prep-script.sh
-
-          cd /work/version
-          git checkout {{inputs.parameters.version-branch}}
-
-          echo "This is a test commit at $(date)" > {{inputs.parameters.image}}        
-          
-          git add .
-          git commit -m "Bump {{inputs.parameters.image}} to version "$current_integer""
-          git push
+        command: [ "sh", "/home/run.sh" ]
+        args : ["{{inputs.parameters.version-branch}}", "{{=sprig.randAlphaNum(5)}}", "{{inputs.parameters.image}}"]
+        
