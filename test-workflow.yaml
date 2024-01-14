@@ -1,0 +1,74 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: test-git-commiter
+  namespace: argo-workflows
+spec:
+  entrypoint: commit
+  imagePullSecrets:
+  - name: regcred
+  volumes:
+    - name: gitconfig
+      secret:
+        secretName: gitcred
+        items:
+          - key: .gitconfigyaml
+            path: gitconfig.yaml
+
+  arguments:
+    parameters:
+      - name: image
+        value: test-git-commiter
+      - name: version-repo
+        value: git@github.com:xyres137/versions.git
+      - name: version-branch
+        value: test
+    
+  volumeClaimTemplates:
+    - metadata:
+        name: work
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 64Mi
+
+  templates:
+    - name: commit
+      inputs:
+        parameters:
+          - name: image
+            value: '{{workflow.parameters.image}}'
+          - name: version-branch
+            value: '{{workflow.parameters.version-branch}}'
+        artifacts:
+          - name: version-repo
+            path: /work/version
+            git:
+              repo: '{{workflow.parameters.version-repo}}'
+              sshPrivateKeySecret:
+                name: argo-git
+                key: ssh-private-key
+              branch: '{{workflow.parameters.version-branch}}'
+      script:
+        image: harbor.atro.xyz/dl-utils/git-commiter:latest
+        volumeMounts:
+          - mountPath: /tmp/
+            name: gitconfig
+          - mountPath: /work
+            name: work
+        securityContext:
+          privileged: true
+        command: [ sh ]
+        source: |
+          set -e   
+          /home/prep-script.sh
+
+          cd /work/version
+          git checkout {{inputs.parameters.version-branch}}
+
+          echo "This is a test commit at $(date)" > {{inputs.parameters.image}}        
+          
+          git add .
+          git commit -m "Bump {{inputs.parameters.image}} to version "$current_integer""
+          git push
