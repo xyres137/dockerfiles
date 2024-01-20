@@ -26,3 +26,4 @@ L_TAG=$registry/$projectdir/$image:latest
 docker buildx build --tag $V_TAG --tag $L_TAG --file "$image".Dockerfile --platform linux/amd64,linux/arm64 --push .
 
 echo "$NEW_VERSION" > /tmp/new-version
+echo "$NEW_VERSION"   

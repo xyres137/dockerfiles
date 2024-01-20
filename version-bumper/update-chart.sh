@@ -11,7 +11,7 @@ newversion=$2
 podbranch=$3
 
 cd /work/pod/$image/ci/${image}
-git checkout -B $podbranch
+git checkout $podbranch
 
 yq eval ".image.tag = \"$newversion\"" ./values.yaml -i
 
