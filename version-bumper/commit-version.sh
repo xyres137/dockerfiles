@@ -13,6 +13,7 @@ cd /work/version
 
 echo "$newversion" > "$image"
 
+git checkout "${image}-version-branch"
 git add .
 git commit -m "Bump $image to version $newversion"
 git push 
