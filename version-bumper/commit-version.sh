@@ -11,10 +11,7 @@ newversion=$2
 
 cd /work/version
 
-git checkout "$image" -- 
 echo "$newversion" > "$image"
-
-cat "$image"
 
 git add .
 git commit -m "Bump $image to version $newversion"
