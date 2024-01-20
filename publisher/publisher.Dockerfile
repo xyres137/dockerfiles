@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM docker:latest
 
 RUN apk --no-cache add git yq openssh-client
 

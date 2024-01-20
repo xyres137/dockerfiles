@@ -1,8 +1,8 @@
 #!/bin/sh
 
-email=$(yq -r '.email' /tmp/gitconfig.yaml) &&
-username=$(yq -r '.username' /tmp/gitconfig.yaml) &&
-privatekey="$(yq -r '.private-key' /tmp/gitconfig.yaml)"
+email=$(yq -r '.email' /gitconfig/gitconfig.yaml) &&
+username=$(yq -r '.username' /gitconfig/gitconfig.yaml) &&
+privatekey="$(yq -r '.private-key' /gitconfig/gitconfig.yaml)"
 
 
 mkdir -p ~/.ssh \
