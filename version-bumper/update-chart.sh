@@ -8,7 +8,7 @@ fi
 
 image=$1
 newversion=$2
-podbranch=$4
+podbranch=$3
 
 cd /work/pod/$image/ci/${image}
 git checkout -B $podbranch
