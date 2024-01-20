@@ -13,3 +13,4 @@ mkdir -p ~/.ssh \
     && chmod 400 ~/.ssh/id_ed25519
 
 git config --global user.email "$email" && git config --global user.name "$username"
+git config --global --add --bool push.autoSetupRemote true

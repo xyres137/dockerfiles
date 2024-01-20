@@ -8,11 +8,9 @@ fi
 
 image=$1
 newversion=$2
-versionbranch=$3
-
 
 cd /work/version
-git checkout $versionbranch
+git checkout -B $image
 echo "$newversion" > $image
 git add .
 git commit -m "Bump $image to version $newversion"
