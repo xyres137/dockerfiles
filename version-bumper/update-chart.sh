@@ -12,9 +12,13 @@ podbranch=$3
 
 cd /work/pod/$image/ci/${image}
 git checkout "$podbranch"
+git pull
 
 yq eval ".image.tag = \"$newversion\"" ./values.yaml -i
 
 git add .
 git commit -m "Bump $image helm chart tag to $newversion"
+
+git fetch origin "$podbranch"
+git rebase origin/"$podbranch"
 git push 
