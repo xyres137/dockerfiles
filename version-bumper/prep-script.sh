@@ -4,8 +4,6 @@ email=$(yq -r '.email' /gitconfig/gitconfig.yaml) &&
 username=$(yq -r '.username' /gitconfig/gitconfig.yaml) &&
 privatekey="$(yq -r '.private-key' /gitconfig/gitconfig.yaml)"
 
-echo "${privatekey}"
-
 mkdir -p ~/.ssh \
     && echo "${privatekey}" > ~/.ssh/id_ed25519 \
     && echo -e "Host github.com\n    StrictHostKeyChecking no" >> ~/.ssh/config \
